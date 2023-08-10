@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %} Hjem {% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">{{ queue }}</h1>
+    {% if queue.active %}
+      <a href="/queue/{{ queue.id }}/person/add" class="btn btn-sm btn-primary">Legg til person i køen</a>
+    {% endif %}
+    <div>
+      {% if queue.active %}
+        <a href="/queue/{{ queue.id }}/toggle" class="btn btn-sm btn-danger">Deaktiver</a>
+        <a class="btn btn-sm btn-outline-info">Tøm køen</a>
+      {% else %}
+        <a href="/queue/{{ queue.id }}/toggle" class="btn btn-sm btn-success">Aktiver</a>
+        <a href="/queue/{{ queue.id }}/clear_queue" class="btn btn-sm btn-info">Tøm køen</a>
+      {% endif %}
+    </div>
+</div>
+
+{% if queue.description %}<p>{{ queue.description }}</p>{% endif %}
+
+<p>
+  <b>Kapasitet</b>: {{ queue.capacity }} om gangen,
+  <b>tid per person</b>: {{ queue.seconds_per_person }} sekunder
+</p>
+
+<h2>Personer i køen</h2>
+
+{% if queue.people.all %}
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Navn</th>
+        <th scope="col">Status</th>
+        <th scope="col">I køen siden</th>
+        <th scope="col">Handlinger</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for person in queue.people.all %}
+        <tr>
+            <th scope="row">{{ person }}</th>
+            <td>
+              {% if person.playing_at %}
+                <span class="badge bg-primary" id="time" data-start-time="{{ person.playing_at.timestamp }}">Spiller nå!</span>
+              {% else %}
+                <span class="badge bg-secondary">Venter i kø</span>
+              {% endif %}
+            </td>
+            <td>{{ person.queued_at }}</td>
+            <td>
+              {% if person.playing_at %}
+                <a href="/queue/{{ queue.id }}/person/{{ person.id }}/finish" class="btn btn-sm btn-info">Fullfør</a>
+              {% else %}
+                <a href="/queue/{{ queue.id }}/person/{{ person.id }}/start" class="btn btn-sm btn-primary">Start</a>
+              {% endif %}
+              <a href="/queue/{{ queue.id }}/person/{{ person.id }}/remove" class="btn btn-sm btn-danger">Fjern</a>
+            </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+<p>Det er ingen personer i køen enda.</p>
+{% endif %}
+{% endblock %}
+
+{% block script %}
+<script>
+  setInterval(() => {
+    document.querySelectorAll('#time').forEach((el) => {
+      const startTime = new Date(Number(el.dataset.startTime.replace(",", ".")) * 1000).getTime()
+      const time = Math.floor((startTime + ({{ queue.seconds_per_person }} * 1000) - Date.now()) / 1000)
+      if (time > 0) {
+        el.innerHTML = `Spiller nå! ${time} sekunder igjen`
+      } else {
+        el.classList.remove('bg-primary')
+        el.classList.add('bg-danger')
+        el.innerHTML = `Spiller nå! ${-time} sekunder over tid!`
+      }
+    })
+  }, 133.7)
+</script>
+{% endblock %}

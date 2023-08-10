@@ -1,0 +1,64 @@
+{% extends "frame.html" %}
+
+{% block extra_head %}
+<link href="/static/css/dashboard.css" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+  <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 align-middle" href="#"><img src="/static/img/logo-white.png" style="height: 25px; margin-top: -5px; margin-right: 10px;">SHqueue</a>
+  <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+</header>
+
+<div class="container-fluid">
+  <div class="row">
+    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+      <div class="position-sticky pt-3 sidebar-sticky">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/">
+              <span data-feather="home" class="align-text-bottom"></span>
+              Hjem
+            </a>
+          </li>
+          {% if user.is_superuser %}
+            <li class="nav-item">
+              <a class="nav-link" href="/admin">
+                <span data-feather="admin" class="align-text-bottom"></span>
+                Admin
+              </a>
+            </li>
+          {% endif %}
+          <div class="dropdown-divider"></div>
+          {% for queue in queues %}
+            <li class="nav-item">
+              <a class="nav-link" href="/queue/{{ queue.id }}">
+              <span data-feather="admin" class="align-text-bottom"></span>
+                {{ queue }}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </nav>
+
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">{% block content %}{% endblock %}</main>
+    {% if alerts %}
+    <div class="toast-container top-0 end-0 p-3">
+      {%for alert in alerts %}
+        <div class="toast align-items-center text-bg-{{ alert.color|default_if_none:"primary" }} border-0" style="display: block;" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="d-flex">
+            <div class="toast-body">
+              {{ alert.text }}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+        </div>
+      {%endfor%}
+      </div>
+      {%endif%}
+  </div>
+</div>
+{% endblock %}

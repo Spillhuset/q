@@ -1,0 +1,41 @@
+{% extends "frame.html" %}
+
+{% block title %} Infoskjerm {% endblock %}
+
+{# make the main block perfectly centered, and the contents inside horizontally centered #}
+{% block extra_head %}
+<style>
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100vh;
+  }
+  main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  h1 {
+    font-size: 20em;
+  }
+  p {
+    font-size: 10em;
+  }
+</style>
+{% endblock %}
+
+{% block body %}
+<main>
+  <h1 class="px-80">{{ queue.name }}</h1>
+  {% if queue.active %}
+    <p>{{ queue.currently_playing|length }} spiller, {{ queue.queued|length }} venter</p>
+    <p>Ventetid: {% if queue.wait_time_minutes is 1 %}1 minutt{% else %}{{ queue.wait_time_minutes }} minutter{% endif %}</p>
+  {% else %}
+    <p>Inaktiv</p>
+  {% endif %}
+</main>
+{% endblock %}
