@@ -36,9 +36,9 @@ class QueuedPerson(models.Model):
 
     queued_at = models.DateTimeField(auto_now_add=True)
     queued_by = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='queued')
-    playing_at = models.DateTimeField(blank=True)
+    playing_at = models.DateTimeField(null=True)
     playing_by = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='playing')
-    finished_at = models.DateTimeField(blank=True)
+    finished_at = models.DateTimeField(null=True)
     finished_by = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='finished')
 
     def __str__(self):
