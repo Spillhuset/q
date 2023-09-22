@@ -34,6 +34,7 @@ CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", "http://127.0.0.1"
 
 INSTALLED_APPS = [
     'gamequeue.apps.GameQueueConfig',
+    'shauth.apps.ShauthConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -139,3 +140,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Login
 
 LOGIN_REDIRECT_URL = "/"
+
+SHAUTH_KEY = os.environ.get("SHAUTH_KEY", None)
