@@ -11,4 +11,5 @@ urlpatterns = [
     path('queue/<int:queue_id>/person/<int:person_id>/finish', views.finish_person, name='person_finish'),
     path('queue/<int:queue_id>/person/<int:person_id>/remove', views.remove_person, name='person_remove'),
     path('info/queue/<int:queue_id>', views.infoscreen_single, name='infoscreen_single'),
+    path('info/queue/<int:queue_id>/data', views.infoscreen_data, name='infoscreen_data'),
 ]

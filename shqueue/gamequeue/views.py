@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.conf import settings
+from django.http import HttpResponse
 
 from .models import *
 from .forms import *
@@ -70,6 +71,11 @@ def remove_person(request, queue_id, person_id):
     person = QueuedPerson.objects.get(id=person_id)
     person.delete()
     return redirect("/queue/" + str(queue_id))
+
+def infoscreen_data(request, queue_id):
+    queue = GameQueue.objects.get(id=queue_id)
+    return HttpResponse(queue.info_text)
+
 
 def infoscreen_single(request, queue_id):
     queue = GameQueue.objects.get(id=queue_id)

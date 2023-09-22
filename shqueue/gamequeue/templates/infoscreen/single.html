@@ -34,11 +34,15 @@
 {% block body %}
 <main>
   <h1 class="px-80">{{ queue.name }}</h1>
-  {% if queue.active %}
-    <p>{{ queue.currently_playing|length }} spiller, {{ queue.queued|length }} venter</p>
-    <p>Ventetid: {% if queue.wait_time_minutes is 1 %}1 minutt{% else %}{{ queue.wait_time_minutes }} minutter{% endif %}</p>
-  {% else %}
-    <p>Inaktiv</p>
-  {% endif %}
+  <p id="text">{{ queue.info_text }}</p>
 </main>
+{% endblock %}
+{% block script %}
+<script>
+  setInterval(() => {
+    fetch("/info/queue/{{ queue.id }}/data")
+      .then(response => response.text())
+      .then(text => document.getElementById("text").innerHTML = text);
+  }, 5000);
+</script>
 {% endblock %}

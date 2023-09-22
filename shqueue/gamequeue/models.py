@@ -30,6 +30,12 @@ class GameQueue(models.Model):
     def wait_time_minutes(self):
         return math.ceil(((min([(self.seconds_per_person - (timezone.now() - person.playing_at).total_seconds()) or 0 for person in self.currently_playing]) if len(self.currently_playing) is self.capacity else 0) + (self.seconds_per_person * self.queued.count() / self.capacity)) / 60)
 
+    @property
+    def info_text(self):
+        if not self.active: return "Inaktiv"
+        if self.queued.count() is 0 and self.currently_playing.count() is 0: return "Klar til å spille"
+        return str(len(self.currently_playing)) + " spiller, " + str(len(self.queued)) + " venter<br/>Ventetid: " + str(self.wait_time_minutes) + " min"
+
 class QueuedPerson(models.Model):
     name = models.CharField(max_length=200)
     queue = models.ForeignKey(GameQueue, on_delete=models.CASCADE, related_name='queued_people')
