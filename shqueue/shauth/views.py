@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login
 
 def auth(request):
-    token = request.POST.get("shauth")
+    token = request.GET.get("shauth")
     print("token:", token)
 
     if token:
