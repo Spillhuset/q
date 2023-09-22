@@ -1,12 +1,15 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
+from django.conf import settings
 
 from .models import *
 from .forms import *
 
 def home(request):
-    if not request.user.is_authenticated: return redirect("/accounts/login")
+    if not request.user.is_authenticated:
+        if settings.SHAUTH_KEY is None: return redirect("/accounts/login")
+        else: return redirect("/auth")
     return render(request, "shqueue/home.html")
 
 @login_required
