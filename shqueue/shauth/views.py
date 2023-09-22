@@ -6,12 +6,12 @@ from django.contrib.auth import login
 
 def auth(request):
     token = request.POST.get("shauth")
-    decoded = None
+    print("token:", token)
 
     if token:
-        # verify token
         try:
           decoded = decode(token, settings.SHAUTH_KEY, algorithms=["HS256"])
+          print("decoded:", decoded)
           if decoded:
               users = User.objects.filter(username=decoded["id"])
               if users: user = users[0]
@@ -28,8 +28,6 @@ def auth(request):
               login(request, user)
               return redirect("/")
         except Exception as e:
-          print("token:", token)
-          print("decoded:", decoded)
           print("exception:", e)
           pass
 
